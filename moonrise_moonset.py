@@ -7,6 +7,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import Select
 import time
 
 # Constants - Selenium Related
@@ -42,6 +43,55 @@ class MoonriseMoonsetBot:
         password_textfield = wait.until(EC.element_to_be_clickable((By.NAME, "password")))
         password_textfield.send_keys(TWITTER_PASSWORD)
         password_textfield.send_keys(Keys.RETURN)
+        self.tweet_moon_info(wait)
+
+
+    def tweet_moon_info(self, wait):
+        schedule_button = wait.until(EC.element_to_be_clickable((By.XPATH, '//div[@data-testid="scheduleOption"]')))
+        schedule_button.click()
+
+        month_selector = wait.until(
+            EC.visibility_of_element_located((By.XPATH, '//select[@id="SELECTOR_1"]')))
+        month_selector.send_keys("March")
+        month_selector.send_keys(Keys.RETURN)
+
+        day_selector = wait.until(
+            EC.visibility_of_element_located((By.XPATH, '//select[@id="SELECTOR_2"]')))
+        day_selector.send_keys("17")
+        day_selector.send_keys(Keys.RETURN)
+
+        day_selector = wait.until(
+            EC.visibility_of_element_located((By.XPATH, '//select[@id="SELECTOR_3"]')))
+        day_selector.send_keys("2023")
+        day_selector.send_keys(Keys.RETURN)
+
+        hour_selector = wait.until(
+            EC.visibility_of_element_located((By.XPATH, '//select[@id="SELECTOR_4"]')))
+        hour_selector.send_keys("1")
+        hour_selector.send_keys(Keys.RETURN)
+
+        min_selector = wait.until(
+            EC.visibility_of_element_located((By.XPATH, '//select[@id="SELECTOR_5"]')))
+        min_selector.send_keys("23")
+        min_selector.send_keys(Keys.RETURN)
+
+        am_pm_selector = wait.until(
+            EC.visibility_of_element_located((By.XPATH, '//select[@id="SELECTOR_6"]')))
+        am_pm_selector.send_keys("AM")
+        am_pm_selector.send_keys(Keys.RETURN)
+
+        confirm_button = wait.until(
+            EC.visibility_of_element_located((By.XPATH, '//div[@data-testid="scheduledConfirmationPrimaryAction"]')))
+        confirm_button.click()
+
+        tweet_textbox = wait.until(
+           EC.visibility_of_element_located((By.XPATH, "//div[contains(@class, 'public-DraftStyleDefault-block')]")))
+        tweet_textbox.send_keys("Yayyyy!")
+
+        tweet_button = wait.until(
+            EC.visibility_of_element_located((By.XPATH, '//div[@data-testid="tweetButtonInline"]')))
+        tweet_button.click()
+
 
     def retrieve_moon_info(self):
         params = {
@@ -54,6 +104,11 @@ class MoonriseMoonsetBot:
         moonrise = moon_data['astronomy']['astro']['moonrise']
         print(moonrise)
 
+
+
+# next: implement the tweet function - including emojis and setting scheduled time to post
+# next next: dividing into 2 classes, one for twitter stuff and one for moon data stuff
+# next next next: python everywhere to make the script run everyday
 
 myMoonBot = MoonriseMoonsetBot()
 myMoonBot.retrieve_moon_info()
